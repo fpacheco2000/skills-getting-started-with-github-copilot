@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const activitySelect = document.getElementById("activity");
   const signupForm = document.getElementById("signup-form");
   const messageDiv = document.getElementById("message");
+  const participantsList = document.getElementById("participants-list");
 
   // Function to fetch activities from API
   async function fetchActivities() {
@@ -66,6 +67,9 @@ document.addEventListener("DOMContentLoaded", () => {
         messageDiv.textContent = result.message;
         messageDiv.className = "success";
         signupForm.reset();
+
+        // Refresh activities dynamically
+        fetchActivities();
       } else {
         messageDiv.textContent = result.detail || "An error occurred";
         messageDiv.className = "error";
@@ -85,6 +89,32 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  // Function to remove a participant
+  function removeParticipant(email) {
+    const participantItem = document.querySelector(`li[data-email="${email}"]`);
+    if (participantItem) {
+      participantsList.removeChild(participantItem);
+    }
+  }
+
+  // Function to add a participant with delete icon
+  function addParticipant(email) {
+    const listItem = document.createElement("li");
+    listItem.dataset.email = email;
+    listItem.innerHTML = `${email} <button class="delete-btn">❌</button>`;
+
+    const deleteButton = listItem.querySelector(".delete-btn");
+    deleteButton.addEventListener("click", () => {
+      removeParticipant(email);
+    });
+
+    participantsList.appendChild(listItem);
+  }
+
   // Initialize app
   fetchActivities();
+
+  // Example usage (replace with dynamic data as needed)
+  addParticipant("student1@mergington.edu");
+  addParticipant("student2@mergington.edu");
 });
